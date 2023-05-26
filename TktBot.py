@@ -51,11 +51,12 @@ def randomWin(board, players, playerAct):
         playerAct = (playerAct + 1) % 4
         moves = movesPlayer(board, players, *players[playerAct])
         if len(moves) > 0:
-            players[playerAct] = moves[random.randint(0, len(moves)-1)]
-            if win(board, *players[playerAct]):
+            pos = moves[random.randint(0, len(moves)-1)]
+            if win(board, *pos):
                 return playerAct
-            constructs = constructsPlayer(board, players, *players[playerAct])
+            constructs = constructsPlayer(board, players, *pos)
             if len(constructs) > 0:
+                players[playerAct] = pos
                 construct = constructs[random.randint(0, len(constructs)-1)]
                 board[construct[0]][construct[1]] += 1
     return -1
