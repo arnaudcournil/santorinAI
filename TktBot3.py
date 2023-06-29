@@ -1,5 +1,3 @@
-
-import threading
 from numba import njit
 import random
 from santorinai.player import Player
@@ -54,7 +52,7 @@ def win(board, x, y):
 def minimax(board, players, playerAct, depth, alpha, beta, maximizingPlayer):
     existAction = False
     if win(board, *players[(playerAct-1) % 4]):
-        return -1 if maximizingPlayer else 1
+        return -depth - 1 if maximizingPlayer else depth + 1
     if depth == 0:
         return 0
     for move in movesPlayer(board, players, *players[playerAct]):
@@ -84,7 +82,7 @@ def minimax(board, players, playerAct, depth, alpha, beta, maximizingPlayer):
 
 @njit
 def getBestMove(board, players, playerAct, depth):
-    bestValue = -2
+    bestValue = -depth - 1
     bestMove = None
     bestConstruct = None
     while bestMove is None:
@@ -108,29 +106,15 @@ def getBestMove(board, players, playerAct, depth):
     return bestMove, bestConstruct
 
 
-class threadWithReturn(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super(threadWithReturn, self).__init__(*args, **kwargs)
-        self._return = None
-
-    def run(self):
-        if self._target is not None:
-            self._return = self._target(*self._args, **self._kwargs)
-
-
 def playProgressive(board, players, playerAct, depth):
     time_start = time.time()
     act_depth = 6
     while act_depth <= depth:
-        thread = threadWithReturn(target=getBestMove, args=(
-            board, players, playerAct, act_depth))
-        thread.start()
-        while time.time() - time_start <= 5 and thread.is_alive():
-            time.sleep(0.1)
-        if time.time() - time_start > 5:
+        move, construct = getBestMove(board, players, playerAct, act_depth)
+        if time.time() - time_start > 1:
+            print(act_depth)
             return move, construct
         act_depth += 1
-        move, construct = thread._return
     return move, construct
 
 
