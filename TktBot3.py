@@ -111,7 +111,7 @@ def playProgressive(board, players, playerAct, depth):
     act_depth = 6
     while act_depth <= depth:
         move, construct = getBestMove(board, players, playerAct, act_depth)
-        if time.time() - time_start > 1:
+        if time.time() - time_start > 0.5:
             print(act_depth)
             return move, construct
         act_depth += 1
