@@ -1,4 +1,4 @@
-from numba import njit
+from numba import njit, uint8, int8, boolean
 import random
 from santorinai.player import Player
 import time
@@ -20,7 +20,8 @@ def movesPlayer(board, players, x, y):
                 continue
             if y+j < 0 or y+j >= board.shape[1]:
                 continue
-            if board[x+i, y+j] - z < 2 and board[x+i, y+j] < 4 and (x+i, y+j) not in players:
+            new_z = board[x+i, y+j]
+            if new_z - z < 2 and new_z < 4 and (x+i, y+j) not in players:
                 moves.append((x+i, y+j))
     return moves
 
